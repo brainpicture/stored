@@ -4,12 +4,16 @@ import (
 	"github.com/apple/foundationdb/bindings/go/src/fdb"
 )
 
-// Connect is main constructor for creating connections
+var db fdb.Database
+
+// New is main constructor for creating connections
 // example: db := stored.Connect("./fdb.cluster")
-func Connect(clusterFilePath string) *DB {
+func Connect(clusterFilePath string) error {
 	fdb.MustAPIVersion(510)
-	conn := DB{
-		fdb: fdb.MustOpen(clusterFilePath, []byte("DB")),
+	fdb, err := fdb.Open(clusterFilePath, []byte("DB"))
+	if err != nil {
+		return err
 	}
-	return &conn
+	db = fdb
+	return nil
 }
